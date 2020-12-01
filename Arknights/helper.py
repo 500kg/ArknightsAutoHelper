@@ -600,6 +600,7 @@ class ArknightsHelper(object):
         logger.info("奖励已领取完毕")
 
 
+
     def recruit(self):
         from . import recruit_calc
         logger.info('识别招募标签')

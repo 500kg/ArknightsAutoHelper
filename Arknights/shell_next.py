@@ -164,7 +164,16 @@ def collect(argv):
         helper.clear_daily_task()
     return 0
 
-
+def building(argv):
+    """
+    build
+        收取基建
+    """
+    helper = _create_helper()
+    with helper._shellng_context:
+        helper.get_building()
+    return 0
+    
 def recruit(argv):
     """
     recruit [tags ...]

@@ -173,7 +173,7 @@ def building(argv):
     with helper._shellng_context:
         helper.get_building()
     return 0
-    
+
 def recruit(argv):
     """
     recruit [tags ...]
@@ -262,8 +262,8 @@ def exit(argv):
     sys.exit()
 
 
-global_cmds = [quick, auto, collect, recruit, interactive, help]
-interactive_cmds = [quick, auto, collect, recruit, exit]
+global_cmds = [quick, auto, collect, building, recruit, interactive, help]
+interactive_cmds = [quick, auto, collect, building, recruit, exit]
 
 def match_cmd(first, avail_cmds):
     targetcmd = [x for x in avail_cmds if x.__name__.startswith(first)]

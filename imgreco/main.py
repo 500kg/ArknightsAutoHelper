@@ -122,6 +122,21 @@ def get_back_my_build(img):
         raise NotImplementedError('unsupported aspect ratio')
 
 # 点击基建主界面右上角的提示（以凸显一键收取）
+
+def check_emergency_task(img):
+    vw, vh = util.get_vwvh(img.size)
+    #(1175, 71) + (56, 44) = (1231, 115)
+    icon1 = img.crop((91.796 * vw, 9.861 * vh, 96.171 * vw , 15.972 * vh)).convert('RGB')
+    icon2 = resources.load_image_cached('base/emergency.png', 'RGB')
+
+    icon1, icon2 = imgops.uniform_size(icon1, icon2)
+    mse = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
+    # print(mse, icon1.size)
+    logger.logimage(icon1)
+    logger.logtext('mse=%f' % mse)
+    return mse < 2000
+
+
 def get_my_build_task(img):
     """
     :returns: [0][1]
@@ -131,6 +146,20 @@ def get_my_build_task(img):
     vw, vh = util.get_vwvh(img)
     if aspect == Fraction(16, 9):
         return (np.array((92.031*vw, 10.417*vh)), np.array((99.688*vw, 10.417*vh)), np.array((99.688*vw, 15.417*vh)), np.array((92.031*vw, 15.417*vh)))
+    else:
+        # FIXME: implement with feature matching?
+        raise NotImplementedError('unsupported aspect ratio')
+
+def get_my_build_task_emergency(img):
+    """
+    :returns: [0][1]
+              [3][2]
+    """
+    #(119, 162)/720
+    aspect = Fraction(*img.size)
+    vw, vh = util.get_vwvh(img)
+    if aspect == Fraction(16, 9):
+        return (np.array((92.031*vw, 16.520*vh)), np.array((99.688*vw, 16.520*vh)), np.array((99.688*vw, 22.500*vh)), np.array((92.031*vw, 22.500*vh)))
     else:
         # FIXME: implement with feature matching?
         raise NotImplementedError('unsupported aspect ratio')

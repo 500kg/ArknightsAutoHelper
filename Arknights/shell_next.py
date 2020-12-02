@@ -166,7 +166,7 @@ def collect(argv):
 
 def building(argv):
     """
-    build
+    building
         收取基建
     """
     helper = _create_helper()

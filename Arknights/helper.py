@@ -141,6 +141,7 @@ class ArknightsHelper(object):
         self.__wait(TINY_WAIT, MANLIKE_FLAG=True)
 
     def tap_rect(self, rc):
+        # x[0], y[0], x[1], y[1]
         hwidth = (rc[2] - rc[0]) / 2
         hheight = (rc[3] - rc[1]) / 2
         midx = rc[0] + hwidth
@@ -725,32 +726,37 @@ class ArknightsHelper(object):
         logger.info('进入我的基建')
         self.tap_quadrilateral(imgreco.main.get_back_my_build(screenshot))
         self.__wait(MEDIUM_WAIT + 3)
-        self.tap_quadrilateral(imgreco.main.get_my_build_task(screenshot))
+        """
+        To do list:
+        1.检测是否有红标，如果有，偏移读取位置（可参考清每日任务的时候切换见习
+        2.点完蓝标之后左下角点三下，然后换班√
+        3.清无人机
+        缺陷：可能瞎jb换人
+        可能的改进：把坏东西（如火神）消耗一点体力，使其排序在后面。
+        """
+        has_emergency = imgreco.main.check_emergency_task(screenshot)
+        if has_emergency:
+            logger.info('有代表事项（红色警告）')
+            self.tap_quadrilateral(imgreco.main.get_my_build_task_emergency(screenshot))
+        else:
+            self.tap_quadrilateral(imgreco.main.get_my_build_task(screenshot))
         self.__wait(SMALL_WAIT)
         logger.info('收取制造产物')
         self.tap_quadrilateral(imgreco.main.get_my_build_task_clear(screenshot))
         self.__wait(SMALL_WAIT)
         logger.info('清理贸易订单')
-        self.tap_quadrilateral(imgreco.main.get_my_sell_task_1(screenshot))
-        self.__wait(SMALL_WAIT + 1)
-        self.tap_quadrilateral(imgreco.main.get_my_sell_tasklist(screenshot))
-        self.__wait(SMALL_WAIT -1 )
-        sell_count = 0
-        while sell_count <= 6:
-            screenshot = self.adb.screenshot()
-            self.tap_quadrilateral(imgreco.main.get_my_sell_task_main(screenshot))
-            self.__wait(TINY_WAIT)
-            sell_count = sell_count + 1
-        self.tap_quadrilateral(imgreco.main.get_my_sell_task_2(screenshot))
-        self.__wait(SMALL_WAIT - 1)
-        sell_count = 0
-        while sell_count <= 6:
-            screenshot = self.adb.screenshot()
-            self.tap_quadrilateral(imgreco.main.get_my_sell_task_main(screenshot))
-            self.__wait(TINY_WAIT)
-            sell_count = sell_count + 1
-        self.back_to_main()
+        self.tap_quadrilateral(imgreco.main.get_my_build_task_clear(screenshot))
+        self.__wait(SMALL_WAIT)
+        logger.info('收取信赖')
+        self.tap_quadrilateral(imgreco.main.get_my_build_task_clear(screenshot))
         logger.info("基建领取完毕")
+        
+        logger.info('基建换班')
+
+        logger.info('无人机加速')
+
+        logger.info('基建操作完成')
+        self.back_to_main()
 
     def log_total_loots(self):
         logger.info('目前已获得：%s', ', '.join('%sx%d' % tup for tup in self.loots.items()))

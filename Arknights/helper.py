@@ -728,12 +728,20 @@ class ArknightsHelper(object):
         self.__wait(MEDIUM_WAIT + 3)
         """
         To do list:
-        1.检测是否有红标，如果有，偏移读取位置（可参考清每日任务的时候切换见习
-        2.点完蓝标之后左下角点三下，然后换班√
-        3.清无人机
-        缺陷：可能瞎jb换人
-        可能的改进：把坏东西（如火神）消耗一点体力，使其排序在后面。
+            1.检测是否有红标，如果有，偏移读取位置（可参考清每日任务的时候切换见习√
+            2.点完蓝标之后左下角点三下，然后换班√
+            3.清无人机
+            4.换班（hard）
+        缺陷：
+            可能瞎jb换人
+        可能的改进：
+            把坏东西（如火神）消耗一点体力，使其排序在后面。
+
+        特性：
+            收集完之后直接点左边几个仓库就能将进去，位置应该不变（16:9）
+        
         """
+        screenshot = self.adb.screenshot()
         has_emergency = imgreco.main.check_emergency_task(screenshot)
         if has_emergency:
             logger.info('有代表事项（红色警告）')
@@ -749,13 +757,19 @@ class ArknightsHelper(object):
         self.__wait(SMALL_WAIT)
         logger.info('收取信赖')
         self.tap_quadrilateral(imgreco.main.get_my_build_task_clear(screenshot))
+        self.__wait(SMALL_WAIT)
+        self.tap_quadrilateral(imgreco.main.get_staff_schedule(screenshot))
+        self.__wait(SMALL_WAIT)
         logger.info("基建领取完毕")
-        
+        """
         logger.info('基建换班')
-
+        
+        self.tap_quadrilateral(imgreco.main.get_staff_schedule(screenshot))
+        
         logger.info('无人机加速')
 
         logger.info('基建操作完成')
+        """
         self.back_to_main()
 
     def log_total_loots(self):

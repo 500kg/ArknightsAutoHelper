@@ -136,6 +136,19 @@ def check_emergency_task(img):
     logger.logtext('mse=%f' % mse)
     return mse < 2000
 
+def get_staff_schedule(img):
+    """
+    :returns: [0][1]
+              [3][2]
+    """
+    #进驻总览:(40, 100), (144, 144)
+    aspect = Fraction(*img.size)
+    vw, vh = util.get_vwvh(img)
+    if aspect == Fraction(16, 9):
+        return (np.array((3.125*vw, 13.888*vh)), np.array((11.250*vw, 13.888*vh)), np.array((11.250*vw, 20*vh)), np.array((3.125*vw, 20*vh)))
+    else:
+        # FIXME: implement with feature matching?
+        raise NotImplementedError('unsupported aspect ratio')
 
 def get_my_build_task(img):
     """

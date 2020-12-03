@@ -546,7 +546,11 @@ class ArknightsHelper(object):
             logger.fatal("任务清单为空!")
 
         for c_id, count in task_list:
-            if not stage_path.is_stage_supported(c_id):
+            if c_id == 'building':
+                self.get_building()
+            elif c_id == 'collect':
+                self.clear_daily_task()
+            elif not stage_path.is_stage_supported(c_id):
                 raise ValueError(c_id)
             logger.info("开始 %s", c_id)
             flag = self.module_battle(c_id, count)
@@ -724,53 +728,112 @@ class ArknightsHelper(object):
         self.back_to_main()
         screenshot = self.adb.screenshot()
         logger.info('进入我的基建')
-        self.tap_quadrilateral(imgreco.main.get_back_my_build(screenshot))
+        self.tap_quadrilateral(imgreco.base.get_back_my_build(screenshot))
         self.__wait(MEDIUM_WAIT + 3)
         """
         To do list:
             1.检测是否有红标，如果有，偏移读取位置（可参考清每日任务的时候切换见习√
             2.点完蓝标之后左下角点三下，然后换班√
             3.清无人机
-            4.换班（hard）
+            4.换班（hard）√（右侧没弄
         缺陷：
-            可能瞎jb换人
+            可能瞎jb换人->这确实
         可能的改进：
             把坏东西（如火神）消耗一点体力，使其排序在后面。
-
+            检查赤金和作战记录，把相应的干员放进去。
         特性：
-            收集完之后直接点左边几个仓库就能将进去，位置应该不变（16:9）
+            收集完之后直接点左边几个仓库就能将进去，位置不变（16:9）
         
         """
         screenshot = self.adb.screenshot()
-        has_emergency = imgreco.main.check_emergency_task(screenshot)
+        self.tap_rect(imgreco.base.get_work_pos(screenshot, 1, 1))
+        """has_emergency = imgreco.base.check_emergency_task(screenshot)
         if has_emergency:
             logger.info('有代表事项（红色警告）')
-            self.tap_quadrilateral(imgreco.main.get_my_build_task_emergency(screenshot))
+            self.tap_quadrilateral(imgreco.base.get_my_build_task_emergency(screenshot))
         else:
-            self.tap_quadrilateral(imgreco.main.get_my_build_task(screenshot))
+            self.tap_quadrilateral(imgreco.base.get_my_build_task(screenshot))
         self.__wait(SMALL_WAIT)
         logger.info('收取制造产物')
-        self.tap_quadrilateral(imgreco.main.get_my_build_task_clear(screenshot))
+        self.tap_quadrilateral(imgreco.base.get_my_build_task_clear(screenshot))
         self.__wait(SMALL_WAIT)
         logger.info('清理贸易订单')
-        self.tap_quadrilateral(imgreco.main.get_my_build_task_clear(screenshot))
+        self.tap_quadrilateral(imgreco.base.get_my_build_task_clear(screenshot))
         self.__wait(SMALL_WAIT)
         logger.info('收取信赖')
-        self.tap_quadrilateral(imgreco.main.get_my_build_task_clear(screenshot))
+        self.tap_quadrilateral(imgreco.base.get_my_build_task_clear(screenshot))
         self.__wait(SMALL_WAIT)
-        self.tap_quadrilateral(imgreco.main.get_staff_schedule(screenshot))
+        self.tap_rect(imgreco.base.get_staff_info(screenshot))
         self.__wait(SMALL_WAIT)
         logger.info("基建领取完毕")
-        """
-        logger.info('基建换班')
         
-        self.tap_quadrilateral(imgreco.main.get_staff_schedule(screenshot))
-        
-        logger.info('无人机加速')
+        logger.info('宿舍换人')
+        for i in range(0, 4):
+            logger.info('宿舍%d换人', i)
+            self.tap_rect(imgreco.base.get_dorm_pos(screenshot, i))
+            self.__wait(SMALL_WAIT)
+            self.act_on_base(5, True)
+            self.__wait(SMALL_WAIT)
+        logger.info('制造站贸易站发电站换人')
+        for i in range(0, 3):
+            for j in range(0, 3):
+                logger.info('基建(%d, %d)换人', i, j)
+                self.tap_rect(imgreco.base.get_work_pos(screenshot, i, j))
+                self.__wait(SMALL_WAIT)
+                self.act_on_base(3)
+                self.__wait(SMALL_WAIT)
+        for i in range(0, 2):
+            if i == 1:
+                logger.info('线索室换人')
+            else:
+                logger.info('办公室换人')
+                self.tap_rect(imgreco.base.get_base_right(screenshot, i))
+                self.__wait(SMALL_WAIT)
+                self.act_on_base(3)
+                self.__wait(SMALL_WAIT)
+        #logger.info('无人机加速')
 
-        logger.info('基建操作完成')
+        #logger.info('基建操作完成')
+        
+        self.back_to_main()"""
+
+    def act_on_base(self, num, dorm = False):
         """
-        self.back_to_main()
+        替换num个人并回到基建页面
+        宿舍需要先清空
+        """
+        screenshot = self.adb.screenshot()
+        has_room_clear = imgreco.base.check_room_clear(screenshot)
+        if not has_room_clear:
+            logger.info('打开进驻信息')
+            self.tap_rect(imgreco.base.get_staff_info(screenshot))
+        self.__wait(MEDIUM_WAIT)
+        if dorm:
+            logger.info('清空')
+            self.tap_rect(imgreco.base.get_room_clear(screenshot))
+        self.tap_rect(imgreco.base.get_room_current(screenshot))
+        self.__wait(SMALL_WAIT)
+        screenshot = self.adb.screenshot()
+        #换干员
+        logger.info('换干员')
+        for i in range(0, num):
+            if not imgreco.base.check_staff_blue(screenshot, i):
+                self.tap_rect(imgreco.base.get_staff_numi(screenshot, i))
+                self.__wait(SMALL_WAIT)
+        #点击确定
+        self.tap_rect(imgreco.base.get_dorm_ok(screenshot))
+        self.__wait(SMALL_WAIT)
+        #可能需要确认是否换下正在工作的干员
+        screenshot = self.adb.screenshot()
+        dlgtype, ocr = imgreco.common.recognize_dialog(screenshot)
+        if dlgtype == 'yesno':
+            self.tap_rect(imgreco.common.get_dialog_right_button_rect(screenshot))
+        screenshot = self.adb.screenshot()
+        if imgreco.common.check_nav_button(screenshot):
+            logger.info('发现返回按钮，点击返回')
+            self.tap_rect(imgreco.common.get_nav_button_back_rect(self.viewport))
+            self.__wait(SMALL_WAIT)
+            # 点击返回按钮之后重新检查
 
     def log_total_loots(self):
         logger.info('目前已获得：%s', ', '.join('%sx%d' % tup for tup in self.loots.items()))

@@ -53,6 +53,59 @@ def check_room_clear(img):
     logger.logtext('mse=%f' % mse)
     return mse < 2000
 
+def check_room_commerical(img):
+    #查看是否是贸易站
+    vw, vh = util.get_vwvh(img.size)
+    icon1 = img.crop((32.656*vw, 82.361*vh, 41.875*vw, 90.278*vh)).convert('RGB')
+    icon2 = resources.load_image_cached('base/commerical.png', 'RGB')
+
+    icon1, icon2 = imgops.uniform_size(icon1, icon2)
+    mse = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
+    # print(mse, icon1.size)
+    logger.logimage(icon1)
+    logger.logtext('mse=%f' % mse)
+    return mse < 2000
+
+def check_room_battle_record(img):
+    #查看是否是在造战斗记录的制造站
+    vw, vh = util.get_vwvh(img.size)
+    icon1 = img.crop((2.188*vw, 77.083*vh, 10.469*vw, 92.639*vh)).convert('RGB')
+    icon2 = resources.load_image_cached('base/battle_record.png', 'RGB')
+
+    icon1, icon2 = imgops.uniform_size(icon1, icon2)
+    mse = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
+    # print(mse, icon1.size)
+    logger.logimage(icon1)
+    logger.logtext('mse=%f' % mse)
+    return mse < 2000
+
+def check_room_gold(img):
+    #查看是否是在造赤金的制造站
+    vw, vh = util.get_vwvh(img.size)
+    icon1 = img.crop((2.188*vw, 77.083*vh, 10.469*vw, 92.639*vh)).convert('RGB')
+    icon2 = resources.load_image_cached('base/gold.png', 'RGB')
+
+    icon1, icon2 = imgops.uniform_size(icon1, icon2)
+    mse = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
+    # print(mse, icon1.size)
+    logger.logimage(icon1)
+    logger.logtext('mse=%f' % mse)
+    return mse < 2000
+
+def check_room_power(img):
+    #查看是否是发电站
+    vw, vh = util.get_vwvh(img.size)
+    icon1 = img.crop((0.859*vw, 84.583*vh, 10.469*vw, 96.250*vh)).convert('RGB')
+    icon2 = resources.load_image_cached('base/power.png', 'RGB')
+
+    icon1, icon2 = imgops.uniform_size(icon1, icon2)
+    mse = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
+    # print(mse, icon1.size)
+    logger.logimage(icon1)
+    logger.logtext('mse=%f' % mse)
+    return mse < 2000
+
+
 def get_room_clear(img):
     #清空房间
     aspect = Fraction(*img.size)
@@ -127,7 +180,7 @@ def get_my_build_task_clear(img):
         # FIXME: implement with feature matching?
         raise NotImplementedError('unsupported aspect ratio')
 
-def get_dorm_pos(img, i):
+def get_base_med(img, i):
     """
     :returns: the i^th dorm pos
     """
@@ -196,7 +249,7 @@ def get_staff_numi(img, i):
         # FIXME: implement with feature matching?
         raise NotImplementedError('unsupported aspect ratio')
 
-def get_work_pos(img, i, j):
+def get_base_left(img, i, j):
     aspect = Fraction(*img.size)
     vw, vh = util.get_vwvh(img)
     posx1 = [0.703, 15.469, 31.797]
@@ -204,7 +257,7 @@ def get_work_pos(img, i, j):
     posy1 = [40.417, 52.639, 66.944]
     posy2 = [46.667, 61.250, 76.111]
     if aspect == Fraction(16, 9):
-        return (posx1[i]*vw, posy1[j]*vh, posx2[i]*vw, posy2[j]*vh)
+        return (posx1[j]*vw, posy1[i]*vh, posx2[j]*vw, posy2[i]*vh)
     else:
         # FIXME: implement with feature matching?
         raise NotImplementedError('unsupported aspect ratio')
@@ -218,6 +271,16 @@ def get_base_right(img, i):
             return (91.719*vw, 24.306*vh, 96.797*vw, 31.389*vh)
         elif i == 1:
             return (96.797*vw, 52.500*vh, 99.375*vw, 60.139*vh)
+    else:
+        # FIXME: implement with feature matching?
+        raise NotImplementedError('unsupported aspect ratio')
+
+def get_base_top(img):
+    aspect = Fraction(*img.size)
+    vw, vh = util.get_vwvh(img)
+
+    if aspect == Fraction(16, 9):
+        return (54.375*vw, 11.111*vh, 75.781*vw, 27.361*vh)
     else:
         # FIXME: implement with feature matching?
         raise NotImplementedError('unsupported aspect ratio')

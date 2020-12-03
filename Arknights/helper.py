@@ -545,11 +545,9 @@ class ArknightsHelper(object):
         if len(task_list) == 0:
             logger.fatal("任务清单为空!")
 
-        for c_id, count in task_list:
+        for c_id, count in task_list.items():
             if c_id == 'building':
                 self.get_building()
-            elif c_id == 'collect':
-                self.clear_daily_task()
             elif not stage_path.is_stage_supported(c_id):
                 raise ValueError(c_id)
             logger.info("开始 %s", c_id)
@@ -735,7 +733,7 @@ class ArknightsHelper(object):
             1.检测是否有红标，如果有，偏移读取位置（可参考清每日任务的时候切换见习√
             2.点完蓝标之后左下角点三下，然后换班√
             3.清无人机
-            4.换班（hard）√（右侧没弄
+            4.换班（hard）√
         缺陷：
             可能瞎jb换人->这确实
         可能的改进：
@@ -746,8 +744,7 @@ class ArknightsHelper(object):
         
         """
         screenshot = self.adb.screenshot()
-        self.tap_rect(imgreco.base.get_work_pos(screenshot, 1, 1))
-        """has_emergency = imgreco.base.check_emergency_task(screenshot)
+        has_emergency = imgreco.base.check_emergency_task(screenshot)
         if has_emergency:
             logger.info('有代表事项（红色警告）')
             self.tap_quadrilateral(imgreco.base.get_my_build_task_emergency(screenshot))
@@ -770,15 +767,15 @@ class ArknightsHelper(object):
         logger.info('宿舍换人')
         for i in range(0, 4):
             logger.info('宿舍%d换人', i)
-            self.tap_rect(imgreco.base.get_dorm_pos(screenshot, i))
+            self.tap_rect(imgreco.base.get_base_med(screenshot, i))
             self.__wait(SMALL_WAIT)
-            self.act_on_base(5, True)
+            self.act_on_base(5, dorm = True)
             self.__wait(SMALL_WAIT)
         logger.info('制造站贸易站发电站换人')
         for i in range(0, 3):
             for j in range(0, 3):
-                logger.info('基建(%d, %d)换人', i, j)
-                self.tap_rect(imgreco.base.get_work_pos(screenshot, i, j))
+                logger.info('基建(%d, %d)换人', i + 1, j + 1)
+                self.tap_rect(imgreco.base.get_base_left(screenshot, i, j))
                 self.__wait(SMALL_WAIT)
                 self.act_on_base(3)
                 self.__wait(SMALL_WAIT)
@@ -791,19 +788,33 @@ class ArknightsHelper(object):
                 self.__wait(SMALL_WAIT)
                 self.act_on_base(3)
                 self.__wait(SMALL_WAIT)
+        logger.info('控制中枢换人')
+        self.tap_rect(imgreco.base.get_base_top(screenshot, i))
+        self.__wait(SMALL_WAIT)
+        self.act_on_base(5)
+        self.__wait(SMALL_WAIT)
         #logger.info('无人机加速')
 
         #logger.info('基建操作完成')
         
-        self.back_to_main()"""
+        self.back_to_main()
 
-    def act_on_base(self, num, dorm = False):
+    def act_on_base(self, num, dorm = False, drone = False):
         """
         替换num个人并回到基建页面
         宿舍需要先清空
         """
         screenshot = self.adb.screenshot()
         has_room_clear = imgreco.base.check_room_clear(screenshot)
+        if imgreco.base.check_room_commerical(screenshot):
+            logger.info('贸易站')
+        elif imgreco.base.check_room_gold(screenshot):
+            logger.info('制造站（赤金）')
+        elif imgreco.base.check_room_battle_record(screenshot):
+            logger.info('制造站（战斗记录）')
+            if 
+        elif imgreco.base.check_room_power(screenshot):
+            logger.info('发电站')
         if not has_room_clear:
             logger.info('打开进驻信息')
             self.tap_rect(imgreco.base.get_staff_info(screenshot))
@@ -833,7 +844,7 @@ class ArknightsHelper(object):
             logger.info('发现返回按钮，点击返回')
             self.tap_rect(imgreco.common.get_nav_button_back_rect(self.viewport))
             self.__wait(SMALL_WAIT)
-            # 点击返回按钮之后重新检查
+
 
     def log_total_loots(self):
         logger.info('目前已获得：%s', ', '.join('%sx%d' % tup for tup in self.loots.items()))

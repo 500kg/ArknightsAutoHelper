@@ -13,6 +13,7 @@ from collections import OrderedDict
 TASK_LIST = OrderedDict()
 TASK_LIST['1-7'] = 20
 TASK_LIST['building'] = 1
-TASK_LIST['daily'] = 1
+TASK_LIST['credit'] = 1
 Ark = ArknightsHelper()
-Ark.main_handler(task_list=TASK_LIST,clear_tasks=True)
+#Ark.main_handler(task_list=TASK_LIST,clear_tasks=True)
+Ark.get_credit_store()

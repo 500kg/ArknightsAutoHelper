@@ -548,6 +548,8 @@ class ArknightsHelper(object):
         for c_id, count in task_list.items():
             if c_id == 'building':
                 self.get_building()
+            if c_id == 'credit':
+                self.get_credit()
             elif not stage_path.is_stage_supported(c_id):
                 raise ValueError(c_id)
             logger.info("开始 %s", c_id)
@@ -704,22 +706,93 @@ class ArknightsHelper(object):
         self.back_to_main()
         screenshot = self.adb.screenshot()
         logger.info('进入好友列表')
-        self.tap_quadrilateral(imgreco.main.get_friend_corners(screenshot))
+        self.tap_quadrilateral(imgreco.credit.get_friend_corners(screenshot))
         self.__wait(SMALL_WAIT)
-        self.tap_quadrilateral(imgreco.main.get_friend_list(screenshot))
+        self.tap_quadrilateral(imgreco.credit.get_friend_list(screenshot))
         self.__wait(SMALL_WAIT)
         logger.info('访问好友基建')
-        self.tap_quadrilateral(imgreco.main.get_friend_build(screenshot))
+        self.tap_quadrilateral(imgreco.credit.get_friend_build(screenshot))
         self.__wait(MEDIUM_WAIT)
         building_count = 0
         while building_count <= 11:
             screenshot = self.adb.screenshot()
-            self.tap_quadrilateral(imgreco.main.get_next_friend_build(screenshot))
+            self.tap_quadrilateral(imgreco.credit.get_next_friend_build(screenshot))
             self.__wait(MEDIUM_WAIT)
             building_count = building_count + 1
             logger.info('访问第 %s 位好友', building_count)
         logger.info('信赖领取完毕')
+        self.get_credit_store()
     
+    def get_credit_store(self):
+        logger.info('信用商店')
+        self.back_to_main()
+        logger.info('进入采购中心')
+        screenshot = self.adb.screenshot()
+        self.tap_rect(imgreco.credit.get_store(screenshot))
+        self.__wait(SMALL_WAIT)
+        self.tap_rect(imgreco.credit.get_creditstore(screenshot))
+        self.__wait(SMALL_WAIT)
+        logger.info('收取信用')
+        self.tap_rect(imgreco.credit.get_creditstore_credit(screenshot))
+        self.__wait(SMALL_WAIT)
+        for j in range(2):
+            for i in range(5):
+                logger.info('买第%d个物品', 1 + i + j*5)
+                self.tap_rect(imgreco.credit.get_creditstore_ith_good(screenshot, i, j))
+                self.__wait(SMALL_WAIT)
+                self.tap_rect(imgreco.credit.get_creditstore_good_buy(screenshot))
+                self.__wait(TINY_WAIT)
+                screenshot = self.adb.screenshot()
+                if imgreco.common.check_get_item_popup(screenshot):
+                    logger.info('领取奖励')
+                    self.tap_rect(imgreco.common.get_reward_popup_dismiss_rect(self.viewport))
+                    self.__wait(SMALL_WAIT)
+                elif imgreco.credit.check_unenough_credit(screenshot):
+                    logger.info('信用点不足')
+                    self.__wait(SMALL_WAIT)
+                    j = j + 1
+                    break
+    
+    def get_meeting_room(self):
+        logger.info('会客室尝试开party')
+        self.back_to_main()
+        screenshot = self.adb.screenshot()
+        logger.info('进入我的基建')
+        self.tap_quadrilateral(imgreco.base.get_back_my_build(screenshot))
+        logger.info('进入会客室')
+        #点击会客室
+        logger.info('领取每日线索')
+        #点击每日线索并领取
+        self.tap_rect(imgreco.credit.get_clue_daily(screenshot))
+        self.__wait(SMALL_WAIT)
+        self.tap_rect(imgreco.credit.get_clue_daily_receive(screenshot))
+        logger.info('领取好友送的线索')
+        #点击好友线索
+        self.tap_rect(imgreco.credit.get_clue_friend(screenshot))
+        clue_cnt = 0
+        while True:
+            screenshot = self.adb.screenshot()
+            clue_id = imgreco.credit.check_clue_friend(screenshot) 
+            if clue_id == 0:
+                logger.info('领取完毕，共领取%d条线索', clue_id)
+                break
+            else:
+                logger.info('领取线索%d', clue_id)
+                clue_cnt = clue_cnt + 1
+                #点击线索以领取
+                self.tap_rect(imgreco.credit.get_clue_friend_receive(screenshot))
+        #回到会客室界面
+
+        for i in range(1, 8):
+            #->摆上线索i:
+            logger.info('线索i的窗口')
+            #打开线索i的窗口
+            #如果没线索就跑路不然就摆上去
+            #退回去
+        
+        #能开party就开（可能线索不足或线索交流开启中）
+
+            
     def get_building(self):
         logger.debug("helper.get_building")
         logger.info("清空基建")
@@ -812,7 +885,6 @@ class ArknightsHelper(object):
             logger.info('制造站（赤金）')
         elif imgreco.base.check_room_battle_record(screenshot):
             logger.info('制造站（战斗记录）')
-            if 
         elif imgreco.base.check_room_power(screenshot):
             logger.info('发电站')
         if not has_room_clear:

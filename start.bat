@@ -3,8 +3,10 @@ echo ArknightsAutoHelper is going to run in 60 seconds, if you don't need it, cl
 timeout 60
 rem 修改ArknightsAutoHelper的路径和盘符
 cd /D C:\Github\ArknightsAutoHelper
+
 rem 修改夜神模拟器的路径（其实是雷电）
 set emuPath=D:\LeiDian\LDPlayer4.0
+
 
 rem 打开夜神模拟器
 start "" "%emuPath%"\dnplayer.exe

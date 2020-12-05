@@ -5,11 +5,11 @@ rem 修改ArknightsAutoHelper的路径和盘符
 cd /D C:\Github\ArknightsAutoHelper
 
 rem 修改夜神模拟器的路径（其实是雷电）
-set emuPath=D:\LeiDian\LDPlayer4.0
+set emuPath=D:\Program Files\Nox\bin
 
 
 rem 打开夜神模拟器
-start "" "%emuPath%"\dnplayer.exe
+start "" "%emuPath%"\nox.exe
 timeout 120
 rem 打开明日方舟
 "%emuPath%"\adb.exe -s 127.0.0.1:5555 shell am start -n com.hypergryph.arknights/com.u8.sdk.U8UnityContext

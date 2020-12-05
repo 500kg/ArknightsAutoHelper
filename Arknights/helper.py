@@ -508,7 +508,7 @@ class ArknightsHelper(object):
 
             dlgtype, ocr = imgreco.common.recognize_dialog(screenshot)
             if dlgtype == 'yesno':
-                if '基建' in ocr or '停止招募' in ocr:
+                if '基建' in ocr or '停止招募' in ocr or '好友' in ocr:
                     self.tap_rect(imgreco.common.get_dialog_right_button_rect(screenshot))
                     self.__wait(3)
                     continue
@@ -520,7 +520,7 @@ class ArknightsHelper(object):
                     raise RuntimeError('未适配的对话框')
             elif dlgtype == 'ok':
                 self.tap_rect(imgreco.common.get_dialog_ok_button_rect(screenshot))
-                self.__wait(1)
+                self.__wait(5)
                 continue
 
             raise RuntimeError('未知画面')
@@ -537,19 +537,25 @@ class ArknightsHelper(object):
                                 sub=True)
         return True
 
-    def main_handler(self, task_list, clear_tasks=False, auto_close=True):
+    def main_handler(self, task_list, clear_tasks=False, auto_close=True, refill_with_item = False):
 
         logger.info("装载模块...")
         logger.info("战斗模块...启动")
         flag = False
+        self.refill_with_item = refill_with_item
         if len(task_list) == 0:
             logger.fatal("任务清单为空!")
 
         for c_id, count in task_list.items():
             if c_id == 'building':
                 self.get_building()
-            if c_id == 'credit':
+                continue
+            elif c_id == 'credit':
                 self.get_credit()
+                continue
+            elif c_id == 'daily':
+                self.clear_daily_task()
+                continue
             elif not stage_path.is_stage_supported(c_id):
                 raise ValueError(c_id)
             logger.info("开始 %s", c_id)
@@ -603,8 +609,39 @@ class ArknightsHelper(object):
                     break
             screenshot = self.adb.screenshot()
         logger.info("奖励已领取完毕")
+        self.clear_weekly_task()
 
+    def clear_weekly_task(self):
+        logger.debug("helper.clear_weekly_task")
+        logger.info("领取每日任务")
+        self.back_to_main()
+        screenshot = self.adb.screenshot()
+        logger.info('进入任务界面')
+        self.tap_quadrilateral(imgreco.main.get_task_corners(screenshot))
+        self.__wait(SMALL_WAIT)
+        screenshot = self.adb.screenshot()
 
+        hasbeginner = imgreco.task.check_beginners_task(screenshot)
+        
+        logger.info('切换到每周任务')
+        self.tap_rect(imgreco.task.get_weekly_task_rect(screenshot, hasbeginner))
+        self.__wait(TINY_WAIT)
+        screenshot = self.adb.screenshot()
+
+        while imgreco.task.check_collectable_reward(screenshot):
+            logger.info('完成任务')
+            self.tap_rect(imgreco.task.get_collect_reward_button_rect(self.viewport))
+            self.__wait(SMALL_WAIT)
+            while True:
+                screenshot = self.adb.screenshot()
+                if imgreco.common.check_get_item_popup(screenshot):
+                    logger.info('领取奖励')
+                    self.tap_rect(imgreco.common.get_reward_popup_dismiss_rect(self.viewport))
+                    self.__wait(SMALL_WAIT)
+                else:
+                    break
+            screenshot = self.adb.screenshot()
+        logger.info("奖励已领取完毕")
 
     def recruit(self):
         from . import recruit_calc
@@ -614,7 +651,6 @@ class ArknightsHelper(object):
         result = recruit_calc.calculate(tags)
         logger.debug('计算结果：%s', repr(result))
         return result
-
 
     def find_and_tap(self, partition, target):
         lastpos = None
@@ -714,13 +750,14 @@ class ArknightsHelper(object):
         self.tap_quadrilateral(imgreco.credit.get_friend_build(screenshot))
         self.__wait(MEDIUM_WAIT)
         building_count = 0
-        while building_count <= 11:
+        while building_count <= 3:
             screenshot = self.adb.screenshot()
             self.tap_quadrilateral(imgreco.credit.get_next_friend_build(screenshot))
             self.__wait(MEDIUM_WAIT)
             building_count = building_count + 1
             logger.info('访问第 %s 位好友', building_count)
         logger.info('信赖领取完毕')
+        self.get_meeting_room()
         self.get_credit_store()
     
     def get_credit_store(self):
@@ -734,7 +771,12 @@ class ArknightsHelper(object):
         self.__wait(SMALL_WAIT)
         logger.info('收取信用')
         self.tap_rect(imgreco.credit.get_creditstore_credit(screenshot))
-        self.__wait(SMALL_WAIT)
+        self.__wait(MEDIUM_WAIT)
+        if imgreco.common.check_get_item_popup(screenshot):
+            logger.info('领取奖励')
+            self.tap_rect(imgreco.common.get_reward_popup_dismiss_rect(self.viewport))
+            self.__wait(SMALL_WAIT)
+
         for j in range(2):
             for i in range(5):
                 logger.info('买第%d个物品', 1 + i + j*5)
@@ -751,6 +793,7 @@ class ArknightsHelper(object):
                     logger.info('信用点不足')
                     self.__wait(SMALL_WAIT)
                     j = j + 1
+                    self.tap_rect(imgreco.common.get_nav_button_back_rect(self.viewport))
                     break
     
     def get_meeting_room(self):
@@ -759,13 +802,28 @@ class ArknightsHelper(object):
         screenshot = self.adb.screenshot()
         logger.info('进入我的基建')
         self.tap_quadrilateral(imgreco.base.get_back_my_build(screenshot))
+        self.__wait(SMALL_WAIT)
+
         logger.info('进入会客室')
         #点击会客室
-        logger.info('领取每日线索')
+        self.tap_rect(imgreco.credit.get_metting_room(screenshot))
+        self.__wait(SMALL_WAIT)
+        self.tap_rect(imgreco.credit.get_metting_room_page(screenshot))
+        self.__wait(SMALL_WAIT)
+
+        
         #点击每日线索并领取
         self.tap_rect(imgreco.credit.get_clue_daily(screenshot))
         self.__wait(SMALL_WAIT)
-        self.tap_rect(imgreco.credit.get_clue_daily_receive(screenshot))
+        screenshot = self.adb.screenshot()
+        if(imgreco.credit.check_clue_daily_receive(screenshot)):
+            logger.info('领取每日线索')
+            self.tap_rect(imgreco.credit.get_clue_daily_receive(screenshot))
+        else:
+            logger.info('每日线索已领取过')
+        self.__wait(SMALL_WAIT)
+        self.tap_rect(imgreco.common.get_nav_button_back_rect(self.viewport))
+
         logger.info('领取好友送的线索')
         #点击好友线索
         self.tap_rect(imgreco.credit.get_clue_friend(screenshot))
@@ -783,13 +841,37 @@ class ArknightsHelper(object):
                 self.tap_rect(imgreco.credit.get_clue_friend_receive(screenshot))
         #回到会客室界面
 
-        for i in range(1, 8):
+        for i in range(0, 7):
             #->摆上线索i:
-            logger.info('线索i的窗口')
+            logger.info('线索%d的窗口', i + 1)
+            self.tap_rect(imgreco.credit.get_clue_put(screenshot, i))
+            self.__wait(SMALL_WAIT)
+            screenshot = self.adb.screenshot()
+            if imgreco.credit.check_clue_none(screenshot):
+                logger.info('没有线索%d', i + 1)
+                continue
+
+            self.tap_rect(imgreco.credit.get_clue_put_on_mine(screenshot))
+            self.__wait(SMALL_WAIT)
+            screenshot = self.adb.screenshot()
+            if not imgreco.credit.check_clue_put_off(screenshot) and imgreco.credit.check_clue_none(screenshot):
+                self.tap_rect(imgreco.credit.get_clue_put_on(screenshot))
+                logger.info('放上自己的线索%d', i + 1)
+                self.__wait(SMALL_WAIT)
+
+            self.tap_rect(imgreco.credit.get_clue_put_on_friend(screenshot))
+            self.__wait(SMALL_WAIT)
+            screenshot = self.adb.screenshot()
+            if not imgreco.credit.check_clue_put_off(screenshot) and imgreco.credit.check_clue_none(screenshot):
+                self.tap_rect(imgreco.credit.get_clue_put_on(screenshot))
+                logger.info('放上好友的线索%d', i + 1)
+                self.__wait(SMALL_WAIT)
             #打开线索i的窗口
             #如果没线索就跑路不然就摆上去
             #退回去
-        
+        self.__wait(SMALL_WAIT)
+        self.tap_rect(imgreco.credit.get_party_on(screenshot))
+        logger.info('开party的缺少素材还没做')
         #能开party就开（可能线索不足或线索交流开启中）
 
             
@@ -862,7 +944,7 @@ class ArknightsHelper(object):
                 self.act_on_base(3)
                 self.__wait(SMALL_WAIT)
         logger.info('控制中枢换人')
-        self.tap_rect(imgreco.base.get_base_top(screenshot, i))
+        self.tap_rect(imgreco.base.get_base_top(screenshot))
         self.__wait(SMALL_WAIT)
         self.act_on_base(5)
         self.__wait(SMALL_WAIT)

@@ -12,28 +12,28 @@ rem 打开夜神模拟器
 start "" "%emuPath%"\nox.exe
 timeout 120
 rem 打开明日方舟
-"%emuPath%"\adb.exe -s 127.0.0.1:5555 shell am start -n com.hypergryph.arknights/com.u8.sdk.U8UnityContext
+"%emuPath%"\adb.exe -s 127.0.0.1:62001 shell am start -n com.hypergryph.arknights/com.u8.sdk.U8UnityContext
 timeout 60
 rem 点击展示页
-"%emuPath%"\adb.exe -s 127.0.0.1:5555 shell input tap 932 679
+"%emuPath%"\adb.exe -s 127.0.0.1:62001 shell input tap 932 679
 timeout 30
 rem 点击账号管理
-"%emuPath%"\adb.exe -s 127.0.0.1:5555 shell input tap 932 679
+"%emuPath%"\adb.exe -s 127.0.0.1:62001 shell input tap 932 679
 timeout 10
 rem 点击账号登录
-"%emuPath%"\adb.exe -s 127.0.0.1:5555 shell input tap 411 507
+"%emuPath%"\adb.exe -s 127.0.0.1:62001 shell input tap 411 507
 timeout 10
 rem 点击密码
-"%emuPath%"\adb.exe -s 127.0.0.1:5555 shell input tap 637 482
+"%emuPath%"\adb.exe -s 127.0.0.1:62001 shell input tap 637 482
 timeout 10
 rem 输入密码
-"%emuPath%"\adb.exe -s 127.0.0.1:5555 shell input text Mr990202
+"%emuPath%"\adb.exe -s 127.0.0.1:62001 shell input text Mr990202
 timeout 10
 rem 点击密码
-"%emuPath%"\adb.exe -s 127.0.0.1:5555 shell input tap 637 482
+"%emuPath%"\adb.exe -s 127.0.0.1:62001 shell input tap 637 482
 timeout 10
 rem 点击登录
-"%emuPath%"\adb.exe -s 127.0.0.1:5555 shell input tap 640 575
+"%emuPath%"\adb.exe -s 127.0.0.1:62001 shell input tap 640 575
 timeout 60
 C:\Users\shism1\Anaconda3\envs\Ark\python.exe ArknightsHelper.py
 timeout 10

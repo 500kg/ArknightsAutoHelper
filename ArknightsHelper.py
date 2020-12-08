@@ -13,13 +13,13 @@ from collections import OrderedDict
 date = datetime.today()
 weekday = date.weekday()
 
-if weekday == 6 or weekday == 7:
+if weekday == 6 or weekday == 5:
     refill_with_item = True
 else:
     refill_with_item = False
 
 TASK_LIST = OrderedDict()
-
+print(weekday)
 TASK_LIST['building'] = 1
 TASK_LIST['credit'] = 1
 TASK_LIST['1-7'] = 3000

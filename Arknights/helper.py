@@ -543,6 +543,7 @@ class ArknightsHelper(object):
         logger.info("战斗模块...启动")
         flag = False
         self.refill_with_item = refill_with_item
+        self.use_refill = refill_with_item
         if len(task_list) == 0:
             logger.fatal("任务清单为空!")
 

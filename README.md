@@ -1,3 +1,29 @@
+Update 2020.12.18:
+
+​	可以刷孤岛风云（MB）关卡了。
+
+​	魔改了使用方法。可以直接在当前目录下start_base 用户名 密码 打的关卡（默认1-7）然后就可以在这个关卡上刷完体力然后领每日每周任务了。周六周日使用会自动把体力吃完。
+
+
+
+​	基建和信用点做了一半。
+
+​	To Do List:
+
+​	1.加速赤金的干员摆在造赤金的制造站里
+
+​	2.无人机加速。
+
+​	3.有时最左边的站点和人事部没有干员入驻。（不鲁邦）
+
+​	4.线索还没咋做，尽量别用。
+
+​	5.函数过于臃肿，可以考虑拆分成几个不同的。
+
+​	6,关卡掉落、基建收集、每日任务等日志的储存
+
+
+
 # Arknights Auto Helper
 
 > 明日方舟辅助脚本，分支说明如下
@@ -290,6 +316,6 @@ $ python ArknightsShell.py -b -t 5-1:2|5-2:3
 
 欢迎来加开发者QQ 2454225341 或加入QQ群 757689154
 
-  [1]: http://static.zybuluo.com/shaobaobaoer/7ifp1acn3an7a3z23t96owt1/TIM%E6%88%AA%E5%9B%BE20190530114456.png
-  [2]: http://static.zybuluo.com/shaobaobaoer/860t36w2ygsvet6sxn3lv3ty/TIM%E5%9B%BE%E7%89%8720190612102050.png
-  [3]: http://static.zybuluo.com/shaobaobaoer/14ufv5gx72buoo1vyaa9jmgy/qrcode_1558871927006.jpg
+[1]: http://static.zybuluo.com/shaobaobaoer/7ifp1acn3an7a3z23t96owt1/TIM%E6%88%AA%E5%9B%BE20190530114456.png
+[2]: http://static.zybuluo.com/shaobaobaoer/860t36w2ygsvet6sxn3lv3ty/TIM%E5%9B%BE%E7%89%8720190612102050.png
+[3]: http://static.zybuluo.com/shaobaobaoer/14ufv5gx72buoo1vyaa9jmgy/qrcode_1558871927006.jpg

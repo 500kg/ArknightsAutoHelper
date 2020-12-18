@@ -371,7 +371,8 @@ class ArknightsHelper(object):
             t = monotonic() - smobj.operation_start
 
             logger.info('已进行 %.1f s，判断是否结束', t)
-
+            if t >= 300:
+                return
             screenshot = self.adb.screenshot()
             if imgreco.end_operation.check_level_up_popup(screenshot):
                 logger.info("等级提升")
@@ -734,6 +735,11 @@ class ArknightsHelper(object):
             self.tap_rect(imgreco.map.get_daily_menu_entry(self.viewport, path[0]))
             self.find_and_tap_daily(path[0], path[1])
             self.find_and_tap(path[1], path[2])
+        elif path[0] == 'event':
+            self.tap_rect(imgreco.map.get_daily_menu_entry(self.viewport, path[0]))
+            self.__wait(MEDIUM_WAIT)
+            self.tap_rect(imgreco.map.get_event_entry(self.viewport, path[1]))
+            self.find_and_tap(path[1], path[2])
         else:
             raise NotImplementedError()
 
@@ -1003,3 +1009,6 @@ class ArknightsHelper(object):
 
     def log_total_loots(self):
         logger.info('目前已获得：%s', ', '.join('%sx%d' % tup for tup in self.loots.items()))
+    
+
+

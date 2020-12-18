@@ -11,6 +11,8 @@ def get_stage_path(stage):
         return ['material', part0, stage]
     elif part0 == 'PR' and parts[1] in ('A', 'B', 'C', 'D'):
         return ['soc', 'PR-' + parts[1], stage]
+    elif part0 in ('MB'): #'MB-7' event
+        return ['event', part0, stage]
     return None
 
 
@@ -18,7 +20,7 @@ def is_stage_supported(stage):
     path = get_stage_path(stage)
     if path is None:
         return False
-    if path[0] in ('main', 'material', 'soc'):
+    if path[0] in ('main', 'material', 'soc', 'event'):
         partition = path[1]
         import resources.imgreco.map_vectors as map_vectors
         if partition in map_vectors.stage_maps:

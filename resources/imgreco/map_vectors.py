@@ -34,7 +34,7 @@ def initialize():
     episodes['ep06'] = episodes['ep05'] + vec(497, 0)
     episodes['ep07'] = episodes['ep06'] + vec(497, 0)
     stage_maps['episodes'] = episodes
-    map_anchors['episodes'] = ['ep00', 'ep01', 'ep02','ep03', 'ep04', 'ep05', 'ep06']
+    map_anchors['episodes'] = ['ep00', 'ep01', 'ep02','ep03', 'ep04', 'ep05', 'ep06', 'ep07']
 
 
     # partition "ep01"
@@ -93,5 +93,11 @@ def initialize():
     stage_maps['PR-C'] = {'PR-C-1': vec0, 'PR-C-2': vec(445, -154)}
     stage_maps['PR-D'] = {'PR-D-1': vec0, 'PR-D-2': vec(426, -173)}
 
-
+    MB = {}
+    MB['MB-1'] = vec(0, 0) #anchor
+    MB['MB-6'] = vec(641, 0)
+    MB['MB-7'] = vec(641, 127)
+    MB['MB-8'] = vec(936, 127)
+    stage_maps['MB'] = MB
+    map_anchors['MB'] = ['MB-1']
 initialize()

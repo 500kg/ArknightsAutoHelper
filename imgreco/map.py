@@ -50,10 +50,18 @@ def get_daily_menu_entry(viewport, daily_type):
         return (23.472*vh, 86.667*vh, 41.111*vh, 96.944*vh)
     elif daily_type == 'soc':
         return (44.583*vh, 86.667*vh, 62.083*vh, 96.944*vh)
+    elif daily_type == 'event':
+        return (110.417*vh, 87.222*vh, 125.000*vh, 96.389*vh)
     else:
         raise KeyError(daily_type)
 
-
+def get_event_entry(viewport, event_type):
+    #活动中再点击一次才进入关卡选择界面
+    vw, vh = util.get_vwvh(viewport)
+    if event_type == 'MB':
+        return (100*vw-31.944*vh, 15.972*vh, 100*vw-9.306*vh, 27.500*vh)
+    else:
+        raise KeyError(event_type)
 if __name__ == '__main__':
     import sys
     import pprint

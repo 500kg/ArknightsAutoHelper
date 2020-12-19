@@ -214,8 +214,8 @@ class ArknightsHelper(object):
             建议自定义该数值以便在出现一定失误,
             超出最大判断次数后有一定的自我修复能力
         :return:
-            True 完成指定次数的作战
-            False 理智不足, 退出作战
+            True 完成作战至指定次数或耗尽体力
+            False 意外出错，返回False以重启
         '''
         logger.debug("helper.module_battle_slim")
         sub = kwargs["sub"] \
@@ -231,7 +231,9 @@ class ArknightsHelper(object):
         try:
             for count in range(set_count):
                 # logger.info("开始第 %d 次战斗", count + 1)
-                self.operation_once_statemachine(c_id, )
+                self.operation_once_statemachine(c_id, flag)
+                if flag == False:
+                    return False
                 logger.info("第 %d 次作战完成", count + 1)
                 if count != set_count - 1:
                     # 2019.10.06 更新逻辑后，提前点击后等待时间包括企鹅物流
@@ -273,8 +275,9 @@ class ArknightsHelper(object):
         first_wait: bool = True
         mistaken_delegation: bool = False
         prepare_reco: dict = None
+        flag: bool = True
 
-    def operation_once_statemachine(self, c_id):
+    def operation_once_statemachine(self, c_id, fflag):
         smobj = ArknightsHelper.operation_once_state()
         def on_prepare(smobj):
             count_times = 0
@@ -374,6 +377,7 @@ class ArknightsHelper(object):
             if t >= 300:
                 # taskkill+reboot
                 smobj.stop = True
+                smboj.flag = False
                 self.__wait(BIG_WAIT)
 
             screenshot = self.adb.screenshot()
@@ -462,11 +466,13 @@ class ArknightsHelper(object):
 
         smobj.state = on_prepare
         smobj.stop = False
+        smboj.flag = True
         smobj.operation_start = 0
 
         while not smobj.stop:
             oldstate = smobj.state
             smobj.state(smobj)
+            fflag = smboj.flag
             if smobj.state != oldstate:
                 logger.debug('state changed to %s', smobj.state.__name__)
 
@@ -587,6 +593,7 @@ class ArknightsHelper(object):
                 logger.error("发生未知错误... 60s后退出")
                 self.__wait(60)
                 self.__del()
+        return flag
 
     def clear_daily_task(self):
         logger.debug("helper.clear_daily_task")

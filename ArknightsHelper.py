@@ -1,6 +1,8 @@
 import os
 from datetime import datetime
 import config
+import sys
+
 '''
 这是一个示例文件，请不要直接运行。
 '''
@@ -42,5 +44,5 @@ def main():
     return Ark.main_handler(task_list=TASK_LIST, refill_with_item = refill_with_item)
 
 if __name__ == '__main__':
-    return main()
+    sys.exit(main())
     

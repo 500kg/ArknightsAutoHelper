@@ -22,6 +22,8 @@ Update 2020.12.18:
 
 ​	6,关卡掉落、基建收集、每日任务等日志的储存
 
+​	7.传参account, 然后搞个config，设置列表
+
 
 
 # Arknights Auto Helper

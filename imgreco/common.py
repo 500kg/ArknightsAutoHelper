@@ -36,7 +36,7 @@ def check_nav_button(img):
     mse = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
     logger.logimage(icon1)
     logger.logtext('mse=%f' % mse)
-    return mse < 2000
+    return mse < 500
 
 
 def get_nav_button_back_rect(viewport):

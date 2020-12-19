@@ -372,7 +372,10 @@ class ArknightsHelper(object):
 
             logger.info('已进行 %.1f s，判断是否结束', t)
             if t >= 300:
-                return
+                # taskkill+reboot
+                smobj.stop = True
+                self.__wait(BIG_WAIT)
+
             screenshot = self.adb.screenshot()
             if imgreco.end_operation.check_level_up_popup(screenshot):
                 logger.info("等级提升")
@@ -429,6 +432,7 @@ class ArknightsHelper(object):
         def on_end_operation(smobj):
             screenshot = self.adb.screenshot()
             logger.info('离开结算画面')
+            self.__wait(5)
             self.tap_rect(imgreco.end_operation.get_dismiss_end_operation_rect(self.viewport))
             reportresult = penguin_stats.reporter.ReportResult.NotReported
             try:
@@ -550,9 +554,13 @@ class ArknightsHelper(object):
 
         for c_id, count in task_list.items():
             if c_id == 'building':
+                if count == False:
+                    continue
                 self.get_building()
                 continue
             elif c_id == 'credit':
+                if count == False:
+                    continue
                 self.get_credit()
                 continue
             elif c_id == 'daily':

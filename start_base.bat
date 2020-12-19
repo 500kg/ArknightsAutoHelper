@@ -5,50 +5,52 @@ rem 修改ArknightsAutoHelper的路径和盘符
 cd /D C:\Github\ArknightsAutoHelper
 
 rem 修改雷电模拟器的路径
-set emuPath=C:\LeiDian\LDPlayer4.0
+set emuPath=D:\Program Files\Nox\bin
 
 set username=%1%
 set password=%2%
 set c_id=%3%
 
 
+echo running for %username%
+
 rem 打开雷电模拟器
-start "" "%emuPath%"\dnplayer.exe index=1
+start "" "%emuPath%"\Nox.exe -clone:Nox_1
 timeout 120
 rem 打开明日方舟
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell am start -n com.hypergryph.arknights/com.u8.sdk.U8UnityContext
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell am start -n com.hypergryph.arknights/com.u8.sdk.U8UnityContext
 timeout 60
 rem 点击展示页
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell input tap 932 679
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input tap 932 679
 timeout 30
 rem 点击账号管理
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell input tap 932 679
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input tap 932 679
 timeout 10
 rem 点击账号登录
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell input tap 411 507
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input tap 411 507
 timeout 10
 rem 点击账号
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell input tap 637 435
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input tap 637 435
 timeout 10
 rem 输入账号
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell input text %username%
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input text %username%
 timeout 10
 rem 点击账号
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell input tap 637 435
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input tap 637 435
 timeout 10
 rem 点击密码
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell input tap 637 482
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input tap 637 482
 timeout 10
 rem 输入密码
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell input text %password%
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input text %password%
 timeout 10
 rem 点击密码
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell input tap 637 482
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input tap 637 482
 timeout 10
 rem 点击登录
-"%emuPath%"\adb.exe -s 127.0.0.1:5557 shell input tap 640 575
+"%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input tap 640 575
 timeout 60
-C:\Users\shism1\Anaconda3\envs\Ark\python.exe ArknightsHelper.py -e %c_id%
+C:\Users\shism1\Anaconda3\envs\Ark\python.exe ArknightsHelper.py -u %username%
 timeout 10
 rem 关闭雷电模拟器
-taskkill /f /im dnplayer.exe
+taskkill /f /im nox.exe

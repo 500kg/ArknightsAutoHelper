@@ -372,9 +372,7 @@ class ArknightsHelper(object):
 
             logger.info('已进行 %.1f s，判断是否结束', t)
             if t >= 300:
-                #关闭夜神模拟器
-                command = 'taskkill /F /IM nox.exe'
-                os.system(command)
+
                 logger.fatal('战斗时间异常')
                 raise RuntimeError('unexcepted battle-time')
 

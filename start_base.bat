@@ -10,8 +10,8 @@ set emuPath=D:\Program Files\Nox\bin
 set username=%1%
 set password=%2%
 set c_id=%3%
-
-
+set start_time=0
+:A
 echo running for %username%
 
 rem 打开雷电模拟器
@@ -51,6 +51,13 @@ rem 点击登录
 "%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input tap 640 575
 timeout 60
 C:\Users\shism1\Anaconda3\envs\Ark\python.exe ArknightsHelper.py -u %username%
+
+if %errorlevel% == 1(
+if %start_time% lss 5(
+set /a %start_time%+=1
+goto A
+)
+)
 timeout 10
 rem 关闭雷电模拟器
 taskkill /f /im nox.exe

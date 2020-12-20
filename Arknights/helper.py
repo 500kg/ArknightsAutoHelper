@@ -231,9 +231,7 @@ class ArknightsHelper(object):
         try:
             for count in range(set_count):
                 # logger.info("开始第 %d 次战斗", count + 1)
-                self.operation_once_statemachine(c_id, flag)
-                if flag == False:
-                    return False
+                self.operation_once_statemachine(c_id)
                 logger.info("第 %d 次作战完成", count + 1)
                 if count != set_count - 1:
                     # 2019.10.06 更新逻辑后，提前点击后等待时间包括企鹅物流
@@ -275,9 +273,8 @@ class ArknightsHelper(object):
         first_wait: bool = True
         mistaken_delegation: bool = False
         prepare_reco: dict = None
-        flag: bool = True
 
-    def operation_once_statemachine(self, c_id, fflag):
+    def operation_once_statemachine(self, c_id):
         smobj = ArknightsHelper.operation_once_state()
         def on_prepare(smobj):
             count_times = 0
@@ -375,10 +372,11 @@ class ArknightsHelper(object):
 
             logger.info('已进行 %.1f s，判断是否结束', t)
             if t >= 300:
-                # taskkill+reboot
-                smobj.stop = True
-                smboj.flag = False
-                self.__wait(BIG_WAIT)
+                #关闭夜神模拟器
+                command = 'taskkill /F /IM nox.exe'
+                os.system(command)
+                logger.fatal('战斗时间异常')
+                raise RuntimeError('unexcepted battle-time')
 
             screenshot = self.adb.screenshot()
             if imgreco.end_operation.check_level_up_popup(screenshot):
@@ -466,13 +464,11 @@ class ArknightsHelper(object):
 
         smobj.state = on_prepare
         smobj.stop = False
-        smboj.flag = True
         smobj.operation_start = 0
 
         while not smobj.stop:
             oldstate = smobj.state
             smobj.state(smobj)
-            fflag = smboj.flag
             if smobj.state != oldstate:
                 logger.debug('state changed to %s', smobj.state.__name__)
 
@@ -552,7 +548,6 @@ class ArknightsHelper(object):
 
         logger.info("装载模块...")
         logger.info("战斗模块...启动")
-        flag = False
         self.refill_with_item = refill_with_item
         self.use_refill = refill_with_item
         if len(task_list) == 0:
@@ -570,6 +565,8 @@ class ArknightsHelper(object):
                 self.get_credit()
                 continue
             elif c_id == 'daily':
+                if count == False:
+                    continue
                 self.clear_daily_task()
                 continue
             elif not stage_path.is_stage_supported(c_id):
@@ -593,7 +590,6 @@ class ArknightsHelper(object):
                 logger.error("发生未知错误... 60s后退出")
                 self.__wait(60)
                 self.__del()
-        return flag
 
     def clear_daily_task(self):
         logger.debug("helper.clear_daily_task")

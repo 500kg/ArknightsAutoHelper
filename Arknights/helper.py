@@ -476,7 +476,11 @@ class ArknightsHelper(object):
 
     def back_to_main(self):  # 回到主页
         logger.info("正在返回主页")
+        flag = 0
         while True:
+            flag = flag + 1
+            if flag >= 20:
+                raise RuntimeError('怀疑卡死（炸咯）')
             screenshot = self.adb.screenshot()
 
             if imgreco.main.check_main(screenshot):
@@ -808,9 +812,7 @@ class ArknightsHelper(object):
                 elif imgreco.credit.check_unenough_credit(screenshot):
                     logger.info('信用点不足')
                     self.__wait(SMALL_WAIT)
-                    j = j + 1
                     self.tap_rect(imgreco.common.get_nav_button_back_rect(self.viewport))
-                    break
     
     def get_meeting_room(self):
         logger.info('会客室尝试开party')
@@ -837,6 +839,7 @@ class ArknightsHelper(object):
             self.tap_rect(imgreco.credit.get_clue_daily_receive(screenshot))
         else:
             logger.info('每日线索已领取过')
+        '''
         self.__wait(SMALL_WAIT)
         self.tap_rect(imgreco.common.get_nav_button_back_rect(self.viewport))
 
@@ -856,7 +859,7 @@ class ArknightsHelper(object):
                 #点击线索以领取
                 self.tap_rect(imgreco.credit.get_clue_friend_receive(screenshot))
         #回到会客室界面
-
+        
         for i in range(0, 7):
             #->摆上线索i:
             logger.info('线索%d的窗口', i + 1)
@@ -885,9 +888,11 @@ class ArknightsHelper(object):
             #打开线索i的窗口
             #如果没线索就跑路不然就摆上去
             #退回去
+        
         self.__wait(SMALL_WAIT)
         self.tap_rect(imgreco.credit.get_party_on(screenshot))
         logger.info('开party的缺少素材还没做')
+        '''
         #能开party就开（可能线索不足或线索交流开启中）
 
             
@@ -945,7 +950,7 @@ class ArknightsHelper(object):
         logger.info('制造站贸易站发电站换人')
         for i in range(0, 3):
             for j in range(0, 3):
-                logger.info('基建(%d, %d)换人', i + 1, j + 1)
+                logger.info('基建B%d0%d换人', i + 1, j + 1)
                 self.tap_rect(imgreco.base.get_base_left(screenshot, i, j))
                 self.__wait(SMALL_WAIT)
                 self.act_on_base(3)
@@ -1007,8 +1012,8 @@ class ArknightsHelper(object):
         #可能需要确认是否换下正在工作的干员
         screenshot = self.adb.screenshot()
         dlgtype, ocr = imgreco.common.recognize_dialog(screenshot)
-        if dlgtype == 'yesno':
-            self.tap_rect(imgreco.common.get_dialog_right_button_rect(screenshot))
+        if '确认' in ocr:
+            self.tap_rect(imgreco.common.get_dialog_bottom_button_rect(screenshot))
         screenshot = self.adb.screenshot()
         if imgreco.common.check_nav_button(screenshot):
             logger.info('发现返回按钮，点击返回')

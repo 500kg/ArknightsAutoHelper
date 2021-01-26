@@ -61,10 +61,16 @@ def check_room_commerical(img):
 
     icon1, icon2 = imgops.uniform_size(icon1, icon2)
     mse = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
+
+
+    icon2 = resources.load_image_cached('base/commerical_1.png', 'RGB')
+
+    icon1, icon2 = imgops.uniform_size(icon1, icon2)
+    mse2 = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
     # print(mse, icon1.size)
     logger.logimage(icon1)
     logger.logtext('mse=%f' % mse)
-    return mse < 2000
+    return mse < 2000 or mse2 < 2000
 
 def check_room_battle_record(img):
     #查看是否是在造战斗记录的制造站
@@ -74,10 +80,15 @@ def check_room_battle_record(img):
 
     icon1, icon2 = imgops.uniform_size(icon1, icon2)
     mse = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
+
+    icon2 = resources.load_image_cached('base/battle_record_1.png', 'RGB')
+
+    icon1, icon2 = imgops.uniform_size(icon1, icon2)
+    mse2 = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
     # print(mse, icon1.size)
     logger.logimage(icon1)
     logger.logtext('mse=%f' % mse)
-    return mse < 2000
+    return mse < 200 or mse2 < 200
 
 def check_room_gold(img):
     #查看是否是在造赤金的制造站
@@ -87,13 +98,18 @@ def check_room_gold(img):
 
     icon1, icon2 = imgops.uniform_size(icon1, icon2)
     mse = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
+
+    icon2 = resources.load_image_cached('base/gold_1.png', 'RGB')
+
+    icon1, icon2 = imgops.uniform_size(icon1, icon2)
+    mse2 = imgops.compare_mse(np.asarray(icon1), np.asarray(icon2))
     # print(mse, icon1.size)
     logger.logimage(icon1)
     logger.logtext('mse=%f' % mse)
-    return mse < 2000
+    return mse < 200 or mse2 < 200
 
 def check_room_power(img):
-    #查看是否是发电站
+    #查看是否是发电站      、
     vw, vh = util.get_vwvh(img.size)
     icon1 = img.crop((0.859*vw, 84.583*vh, 10.469*vw, 96.250*vh)).convert('RGB')
     icon2 = resources.load_image_cached('base/power.png', 'RGB')
@@ -270,7 +286,7 @@ def get_base_right(img, i):
         if i == 0:
             return (91.719*vw, 24.306*vh, 96.797*vw, 31.389*vh)
         elif i == 1:
-            return (96.797*vw, 52.500*vh, 99.375*vw, 60.139*vh)
+            return (96.875*vw, 51.944*vh, 99.453*vw, 61.389*vh)
     else:
         # FIXME: implement with feature matching?
         raise NotImplementedError('unsupported aspect ratio')

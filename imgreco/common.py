@@ -110,6 +110,13 @@ def get_dialog_right_button_rect(img):
     assert dlgtype == 'yesno'
     return (50*vw, y-4*vh, 100*vw, y+4*vh)
 
+def get_dialog_bottom_button_rect(img):
+    vw, vh = util.get_vwvh(img)
+    dlgtype, y = check_dialog(img)
+    #assert dlgtype == 'yesno'
+    return (50*vw+30.417*vh, 91.389*vh, 50*vw+50.694*vh, 98.056*vh)
+
+
 def get_dialog_ok_button_rect(img):
     vw, vh = util.get_vwvh(img)
     dlgtype, y = check_dialog(img)

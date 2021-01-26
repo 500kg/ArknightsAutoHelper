@@ -10,7 +10,7 @@ set adb_service=127.0.0.1:62001
 set username=%1%
 set password=%2%
 set c_id=%3%
-echo -clone:Nox_2
+rem echo -clone:Nox_2
 set start_time=0
 :A
 echo running for %username%
@@ -56,7 +56,7 @@ C:\Users\shism1\Anaconda3\envs\Ark\python.exe ArknightsHelper.py -u %username%
 
 if %errorlevel% equ 1 (
 timeout 2
-if %start_time% lss 5 (
+if %start_time% lss 3 (
 timeout 2
 taskkill /f /im nox.exe
 set /a start_time+=1

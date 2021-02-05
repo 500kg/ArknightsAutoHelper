@@ -11,7 +11,7 @@ def get_stage_path(stage):
         return ['material', part0, stage]
     elif part0 == 'PR' and parts[1] in ('A', 'B', 'C', 'D'):
         return ['soc', 'PR-' + parts[1], stage]
-    elif part0 in ('MB'): #'MB-7' event
+    elif part0 in ('MB', 'WR'): #'MB-7' event
         return ['event', part0, stage]
     return None
 

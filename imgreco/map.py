@@ -60,6 +60,8 @@ def get_event_entry(viewport, event_type):
     vw, vh = util.get_vwvh(viewport)
     if event_type == 'MB':
         return (100*vw-31.944*vh, 15.972*vh, 100*vw-9.306*vh, 27.500*vh)
+    elif event_type == 'WR':
+        return (87.437*vw, 61.556*vh, 93.687*vw, 90.778*vh)
     else:
         raise KeyError(event_type)
 if __name__ == '__main__':

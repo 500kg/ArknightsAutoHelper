@@ -100,4 +100,14 @@ def initialize():
     MB['MB-8'] = vec(936, 127)
     stage_maps['MB'] = MB
     map_anchors['MB'] = ['MB-1']
+
+
+    WR = {}
+    WR['WR-1'] = vec(0, 0) #anchor
+    WR['WR-3'] = WR['WR-1'] + vec(702, 0)
+    WR['WR-8'] = WR['WR-3'] + vec(1002, 0)
+    WR['WR-9'] = WR['WR-8'] + vec(205, -156)
+    WR['WR-10'] = WR['WR-8'] + vec(358, 0)
+    stage_maps['WR'] = WR
+    map_anchors['WR'] = ['WR-1', 'WR-3', 'WR-8']
 initialize()

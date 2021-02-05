@@ -31,7 +31,8 @@ TASK_LIST = OrderedDict()
 print(weekday)
 #TASK_LIST['building'] = 1
 ep = config.get(user + '/c_id', '1-7')
-TASK_LIST[ep] = 3000
+TASK_LIST[ep] = 1000
+TASK_LIST['1-7'] = 1000
 TASK_LIST['daily'] = config.get(user + '/daily', 'True')
 
 TASK_LIST['building'] = config.get(user + '/building', 'False')

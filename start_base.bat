@@ -11,6 +11,9 @@ set username=%1%
 set password=%2%
 set c_id=%3%
 
+set start_time=0
+
+:A
 
 echo running for %username%
 
@@ -51,6 +54,18 @@ rem 点击登录
 "%emuPath%"\adb.exe -s 127.0.0.1:62025 shell input tap 640 575
 timeout 60
 C:\Users\shism1\Anaconda3\envs\Ark\python.exe ArknightsHelper.py -u %username%
+
+
+if %errorlevel% equ 1 (
+timeout 2
+if %start_time% lss 5 (
+timeout 2
+taskkill /f /im nox.exe
+set /a start_time+=1
+goto A
+)
+)
+
 timeout 10
 rem 关闭雷电模拟器
 taskkill /f /im nox.exe

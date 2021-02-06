@@ -188,11 +188,10 @@ API_KEY = get('ocr/baidu_api/app_key', 'AAAZZZ')
 SECRET_KEY = get('ocr/baidu_api/app_secret', 'AAAZZZ')
 
 reporter = get('reporting/enabled', False)
-
-
+date = datetime.datetime.now().strftime('%Y-%m-%d')
 instanceid = get_instance_id()
 if instanceid == 0:
-    logfile = os.path.join(root, 'log', 'ArknightsAutoHelper.log')
+    logfile = os.path.join(root, 'log', 'ArknightsAutoHelper' + date + '.log')
 else:
     logfile = os.path.join(root, 'log', 'ArknightsAutoHelper.%d.log' % instanceid)
 
